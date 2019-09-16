@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title> D3 Examples </title>
+        <script	src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" >
+        </script>
+    </head>
+    <body>
+        <script>
+            var dataset = [{x: 2010, y: 13.83},
+                {x: 2011, y: 13.83},
+                {x: 2012, y: 13.68},
+                {x: 2013, y: 13.66},
+                {x: 2014, y: 13.42}
+            ];
+            var h = 400; //height of the graph
+            var w = 1000; //width of the graph
+            var p = 50; //padding
+
+            var x = d3.scale.linear()
+                    .domain([2010, d3.max(dataset, function (d) {
+                            return d.x;
+                        })])
+                    .range([p, w - p]);
+
+            var y = d3.scale.linear().domain([13.30, d3.max(dataset, function (d) {
+                    return d.y;
+                })])
+                    .range([h - p, p]);
+
+
+            var svg = d3.select("body")
+                    .append("svg")
+                    .attr("width", w)
+                    .attr("height", h)
+                    .attr("padding", p)
+                    .style("border", "1px solid black");
+
+
+            svg.selectAll("circle")
+                    .data(dataset)
+                    .enter()
+                    .append("circle")
+                    .attr("cx", function (d) {
+                        return x(d.x);
+                    }).attr("cy", function (d) {
+                return y(d.y);
+            }).attr("r", 10);
+
+            d3.selectAll("circle")
+                    .attr("fill", "red")
+                    .attr("stroke", "pink")
+                    .attr("stroke-width", "3px");
+            var xAxis = d3.svg.axis()
+                    .scale(x)
+                    .ticks(5).tickFormat(d3.format("d"));
+            var yAxis = d3.svg.axis()
+                    .scale(y)
+                    .ticks(5)
+                    .orient('left');
+            svg.append("g")
+                    .attr("transform", "translate(" + p + ",0)")
+                    .call(yAxis);
+
+            svg.append("g")
+                    .attr("transform", "translate(0," + (h - p) + ")")
+                    .call(xAxis);
+
+            var drawLine = d3.svg.line()
+                    .x(function (d) {
+                        return x(d.x);
+                    }).y(function (d) {
+                return y(d.y);
+            });
+
+            var path = svg.append('path')
+                    .attr('d', drawLine(dataset))
+                    .attr('stroke', 'red')
+                    .attr('stroke-width', 3)
+                    .attr('fill', 'none');
+
+
+
+        </script>
+    </body>
+</html>
+
